@@ -9,5 +9,7 @@ import com.msmavas.HRMS_Backend.models.User;
 public interface UserRepository extends JpaRepository<User, Integer> {
 	User findByUsername(String username);
 
-	Optional<User> findByUsernameAndPasswordHash(String username, String password);
+	
+
+	 Optional<User> findByEmailAndPasswordHash(String email, String passwordHash);
 }
