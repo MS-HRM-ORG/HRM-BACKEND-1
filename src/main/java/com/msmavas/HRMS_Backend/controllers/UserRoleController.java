@@ -1,6 +1,7 @@
 package com.msmavas.HRMS_Backend.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +28,16 @@ public class UserRoleController {
     }
 
     @PostMapping
-    public ResponseEntity<UserRoleResponse> createUserRole(@RequestBody UserRoleRequest userRoleRequest) {
+    public ResponseEntity<?> createUserRole(@RequestBody UserRoleRequest userRoleRequest) {
         UserRole userRole = userRoleService.createUserRole(userRoleRequest.getUserId(), userRoleRequest.getRoleId());
-        UserRoleResponse response = new UserRoleResponse();
-        response.setUsername(userRole.getUser().getUsername());
-        response.setRoleName(userRole.getRole().getRoleName());
-        return ResponseEntity.ok(response);
+        if (userRole != null) {
+            UserRoleResponse response = new UserRoleResponse();
+            response.setUsername(userRole.getUser().getUsername());
+            response.setRoleName(userRole.getRole().getRoleName());
+            return ResponseEntity.status(HttpStatus.CREATED).body("User role created successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create user role");
+        }
     }
 
     static class UserRoleResponse {

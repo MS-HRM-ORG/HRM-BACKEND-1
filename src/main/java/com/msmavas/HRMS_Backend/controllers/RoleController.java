@@ -4,6 +4,7 @@ import com.msmavas.HRMS_Backend.DTO.RoleDTO;
 import com.msmavas.HRMS_Backend.models.Role;
 import com.msmavas.HRMS_Backend.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,12 +34,10 @@ public class RoleController {
     }
 
     @PostMapping
-    public ResponseEntity<RoleDTO> createRole(@RequestBody RoleDTO roleDTO) {
-        Role role = convertToEntity(roleDTO);
+    public ResponseEntity<?> createRole(@RequestBody Role role) {
         Role createdRole = roleService.saveRole(role);
-        return ResponseEntity.ok(convertToDTO(createdRole));
+        return ResponseEntity.status(HttpStatus.CREATED).body("Role created successfully with ID: " + createdRole.getRoleId());
     }
-
     @PutMapping("/{id}")
     public ResponseEntity<RoleDTO> updateRole(@PathVariable int id, @RequestBody RoleDTO roleDTO) {
         Role role = convertToEntity(roleDTO);

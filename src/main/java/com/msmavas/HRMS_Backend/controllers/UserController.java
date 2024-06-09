@@ -3,6 +3,7 @@ package com.msmavas.HRMS_Backend.controllers;
 import com.msmavas.HRMS_Backend.models.User;
 import com.msmavas.HRMS_Backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,11 +18,11 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<?> createUser(@RequestBody User user) {
         User savedUser = userService.saveUser(user);
-        return ResponseEntity.ok(savedUser);
-        
+        return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully with ID: " + savedUser.getUserId());
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User user) {
@@ -45,6 +46,17 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
+       
         return ResponseEntity.ok(users);
+    }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User loginRequest) {
+        Optional<User> user = userService.authenticateUser(loginRequest.getEmail(), loginRequest.getPasswordHash());
+        
+        if (user.isPresent()) {
+            return ResponseEntity.ok("Login successful!"); // You can return any data you need upon successful login
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        }
     }
 }
