@@ -8,6 +8,8 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "Users")
 public class User {
@@ -31,12 +33,19 @@ public class User {
     @Column(nullable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Timestamp updatedAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id")
-    private Role roleEntity;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "role_id")
+//    @JsonIgnoreProperties("user")
+//    private Role role;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("user")
     private Set<UserRole> userRoles;
+    
+    
+    
+    
+    
 
 	public int getUserId() {
 		return userId;
@@ -86,13 +95,7 @@ public class User {
 		this.updatedAt = updatedAt;
 	}
 
-	public Role getRoleEntity() {
-		return roleEntity;
-	}
-
-	public void setRoleEntity(Role roleEntity) {
-		this.roleEntity = roleEntity;
-	}
+	
 
 	public Set<UserRole> getUserRoles() {
 		return userRoles;
@@ -106,11 +109,19 @@ public class User {
 		
 	}
 
-	public User(Role roleEntity, Set<UserRole> userRoles) {
+	public User(Set<UserRole> userRoles) {
 		super();
-		this.roleEntity = roleEntity;
-		this.userRoles = userRoles;
+		
+//		this.userRoles = userRoles;
 	}
+
+//	public Role getRole() {
+//		return role;
+//	}
+//
+//	public void setRole(Role role) {
+//		this.role = role;
+//	}
     
 
 	}

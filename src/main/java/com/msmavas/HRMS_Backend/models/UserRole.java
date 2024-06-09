@@ -5,7 +5,7 @@ import com.msmavas.HRMS_Backend.DTO.UserRoleDTO;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "User_Roles")
+@Table(name = "Users_Roles")
 public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
