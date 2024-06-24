@@ -1,5 +1,6 @@
 package com.msmavas.HRMS_Backend.controllers;
 
+import com.msmavas.HRMS_Backend.DTO.UserDTO;
 import com.msmavas.HRMS_Backend.models.User;
 import com.msmavas.HRMS_Backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class UserController {
     }
 
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User user) {
         user.setUserId(id);
         User updatedUser = userService.updateUser(user);
@@ -44,19 +45,50 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-       
-        return ResponseEntity.ok(users);
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> users = userService.getAllUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginRequest) {
-        Optional<User> user = userService.authenticateUser(loginRequest.getEmail(), loginRequest.getPasswordHash());
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPasswordHash();
+        
+        Optional<User> user = userService.authenticateUser(email, password);
         
         if (user.isPresent()) {
-            return ResponseEntity.ok("Login successful!"); // You can return any data you need upon successful login
+            System.out.println("Login successful!");
+            return ResponseEntity.ok("Login successful!");
         } else {
+            System.out.println("Login failed. Invalid email or password.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
     }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
+        userService.generateAndSendOtp(email);
+        return ResponseEntity.ok("OTP has been sent to your email.");
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<String> verifyOtp(@RequestParam String email, @RequestParam String otp) {
+        boolean isOtpValid = userService.verifyOtp(email, otp);
+        if (isOtpValid) {
+            return ResponseEntity.ok("OTP is valid. You can now reset your password.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired OTP.");
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam String email, @RequestParam String otp, @RequestParam String newPassword) {
+        boolean isOtpValid = userService.verifyOtp(email, otp);
+        if (isOtpValid) {
+            userService.updatePassword(email, newPassword);
+            return ResponseEntity.ok("Password has been successfully reset.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired OTP.");
+        }
+    }
+
 }
