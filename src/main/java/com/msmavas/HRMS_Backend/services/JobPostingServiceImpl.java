@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class JobPostingServiceImpl implements JobPostingService {
@@ -15,8 +16,25 @@ public class JobPostingServiceImpl implements JobPostingService {
 
     @Override
     public JobPosting saveJobPosting(JobPosting jobPosting) {
-        return jobPostingRepository.save(jobPosting);
+        // Check if a job posting with the same title and location already exists
+        Optional<JobPosting> existingJobPosting = jobPostingRepository.findByJobTitleAndLocation(jobPosting.getJobTitle(), jobPosting.getLocation());
+        
+        if (existingJobPosting.isPresent()) {
+            // If an existing job posting is found, update the existing one with the new data
+            JobPosting existing = existingJobPosting.get();
+            existing.setDepartment(jobPosting.getDepartment());
+            existing.setJobDescription(jobPosting.getJobDescription());
+            existing.setJobpostingstatus(jobPosting.getJobpostingstatus());
+            existing.setJobpostingdeletedBy(jobPosting.getJobpostingdeletedBy());
+           
+
+            return jobPostingRepository.save(existing);
+        } else {
+            // If no existing job posting is found, save the new job posting
+            return jobPostingRepository.save(jobPosting);
+        }
     }
+
 
     @Override
     public JobPosting updateJobPosting(JobPosting jobPosting) {

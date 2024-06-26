@@ -45,7 +45,7 @@ public class RoleController {
             return new ResponseEntity<>("Role not found with ID: " + id, HttpStatus.NOT_FOUND);
         }
     }
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<?> updateRole(@PathVariable("id") int id, @RequestBody Role role) {
         try {
             Role updatedRole = roleService.updateRole(id, role);

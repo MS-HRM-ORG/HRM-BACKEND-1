@@ -54,7 +54,7 @@ public class UserRoleController {
         return new ResponseEntity<>(userRoles, HttpStatus.OK);
     }
 
-    @PutMapping("/{userRoleId}")
+    @PostMapping("/{userRoleId}")
     public ResponseEntity<?> updateUserRole(@PathVariable int userRoleId, @RequestBody UserRoleRequest userRoleRequest) {
         UserRole updatedUserRole = userRoleService.updateUserRole(userRoleId, userRoleRequest.getUserId(), userRoleRequest.getRoleId());
         if (updatedUserRole != null) {

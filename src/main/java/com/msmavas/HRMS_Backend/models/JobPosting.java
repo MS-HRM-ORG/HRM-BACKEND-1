@@ -2,6 +2,8 @@ package com.msmavas.HRMS_Backend.models;
 
 import jakarta.persistence.*;
 
+import java.sql.Timestamp;
+
 @Entity
 @Table(name = "Job_Postings")
 public class JobPosting {
@@ -21,6 +23,28 @@ public class JobPosting {
 
     @Column(name = "department")
     private String department;
+
+    
+    
+    
+
+    @Column(name = "status", length = 50)
+    private String jobpostingstatus = "Notverified";
+
+    @Column(name = "deleted_by", unique = true)
+    private String jobpostingdeletedBy;
+
+    @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Timestamp jobpostingcreatedAt;
+
+    
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private CompanyDetails companyDetails;
+    
+    @ManyToOne
+    @JoinColumn(name = "create_by_role_id", nullable = false)
+    private Role createdBy;
 
     // Getters and Setters
 
@@ -62,5 +86,47 @@ public class JobPosting {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+
+   
+
+    public Role getRole() {
+		return createdBy;
+	}
+
+	public void setRole(Role createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getJobpostingstatus() {
+        return jobpostingstatus;
+    }
+
+    public void setJobpostingstatus(String jobpostingstatus) {
+        this.jobpostingstatus = jobpostingstatus;
+    }
+
+    public String getJobpostingdeletedBy() {
+        return jobpostingdeletedBy;
+    }
+
+    public void setJobpostingdeletedBy(String jobpostingdeletedBy) {
+        this.jobpostingdeletedBy = jobpostingdeletedBy;
+    }
+
+    public Timestamp getJobpostingcreatedAt() {
+        return jobpostingcreatedAt;
+    }
+
+    public void setJobpostingcreatedAt(Timestamp jobpostingcreatedAt) {
+        this.jobpostingcreatedAt = jobpostingcreatedAt;
+    }
+
+    public CompanyDetails getCompanyDetails() {
+        return companyDetails;
+    }
+
+    public void setCompanyDetails(CompanyDetails companyDetails) {
+        this.companyDetails = companyDetails;
     }
 }

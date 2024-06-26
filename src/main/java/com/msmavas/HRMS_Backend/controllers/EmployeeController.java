@@ -27,7 +27,7 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error registering employee: " + e.getMessage());
         }
     }
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<Employee> updateEmployee(@PathVariable int id, @RequestBody Employee employee) {
         employee.setEmployeeId(id);
         Employee updatedEmployee = employeeService.updateEmployee(employee);
