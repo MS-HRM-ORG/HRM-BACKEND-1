@@ -57,6 +57,8 @@ public class User {
 
     @Column
     private LocalDateTime otpExpiryDate;
+    
+    
 
     // Getters and Setters
 
